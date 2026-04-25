@@ -20,4 +20,4 @@ func NewUserService(r UserRepo, h *hasher.BcryptHasher) *UserService {
 	return &UserService{repo: r}
 }
 
-func (s *UserService) Create(ctx context.Context)
+// func (s *UserService) Create(ctx context.Context)

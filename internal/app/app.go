@@ -24,7 +24,7 @@ func NewServer(appCfg *config.AppConfig, db *sql.DB) (*http.Server, error) {
 	// router
 	mux := http.NewServeMux()
 	// routes
-	mux.HandleFunc("/", authHandler.Register)
+	mux.HandleFunc("POST /register", authHandler.Register)
 
 	return &http.Server{
 		Addr:    appCfg.Port,

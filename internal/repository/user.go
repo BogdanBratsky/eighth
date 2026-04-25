@@ -30,14 +30,17 @@ func (r *UserPostgres) Create(ctx context.Context, user *model.User) error {
 	return nil
 }
 
-func (r *UserPostgres) GetByEmail(ctx context.Context, email string) (*model.User, error) {
-	var user model.User
+func (r *UserPostgres) GetByIdentifier(ctx context.Context, identifier string) (*model.User, error) {
 	query := `
 		SELECT id, login, email, password_hash, is_active, created_at, updated_at
-		FROM users 
-		WHERE email = $1;
+		FROM users
+		WHERE login = $1 OR email = $1
+		LIMIT 1;
 	`
-	err := r.db.QueryRowContext(ctx, query, email).
+
+	user := &model.User{}
+
+	err := r.db.QueryRowContext(ctx, query, identifier).
 		Scan(
 			&user.ID,
 			&user.Login,
@@ -49,69 +52,10 @@ func (r *UserPostgres) GetByEmail(ctx context.Context, email string) (*model.Use
 		)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil
+			return nil, errors.New("user not found")
 		}
 		return nil, err
 	}
 
-	return &user, nil
-}
-
-func (r *UserPostgres) GetByID(ctx context.Context, id int) (*model.User, error) {
-	var user model.User
-	query := `
-		SELECT id, login, email, password_hash, is_active, created_at, updated_at
-		FROM users
-		WHERE id = $1;
-	`
-	err := r.db.QueryRowContext(ctx, query, id).
-		Scan(
-			&user.ID,
-			&user.Login,
-			&user.Email,
-			&user.PasswordHash,
-			&user.IsActive,
-			&user.CreatedAt,
-			&user.UpdatedAt,
-		)
-	if err != nil {
-		return nil, err
-	}
-
-	return &user, nil
-}
-
-func (r *UserPostgres) List(ctx context.Context, limit, offset int) ([]model.User, error) {
-	query := `
-		SELECT id, login, created_at
-		FROM users
-		ORDER BY id
-		LIMIT $1 OFFSET $2;
-	`
-
-	rows, err := r.db.QueryContext(ctx, query, limit, offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var users []model.User
-	for rows.Next() {
-		u := model.User{}
-		err := rows.Scan(
-			&u.ID,
-			&u.Login,
-			&u.CreatedAt,
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		users = append(users, u)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return users, nil
+	return user, nil
 }

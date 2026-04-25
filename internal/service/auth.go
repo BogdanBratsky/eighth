@@ -10,7 +10,7 @@ import (
 
 type AuthRepo interface {
 	Create(ctx context.Context, user *model.User) error
-	GetByEmail(ctx context.Context, email string) (*model.User, error)
+	GetByIdentifier(ctx context.Context, identifier string) (*model.User, error)
 }
 
 type AuthService struct {
@@ -26,11 +26,13 @@ func NewAuthService(r AuthRepo, h *hasher.BcryptHasher) *AuthService {
 }
 
 func (s *AuthService) Register(ctx context.Context, login, email, password string) error {
-	exists, err := s.repo.GetByEmail(ctx, email)
-	if err != nil {
-		return fmt.Errorf("db error: %w", err)
+	emailExists, err := s.repo.GetByIdentifier(ctx, email)
+	if emailExists != nil {
+		return ErrUserExists
 	}
-	if exists != nil {
+
+	loginExists, err := s.repo.GetByIdentifier(ctx, login)
+	if loginExists != nil {
 		return ErrUserExists
 	}
 

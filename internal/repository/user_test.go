@@ -69,29 +69,29 @@ func TestCreateUser(t *testing.T) {
 func TestGetByEmail(t *testing.T) {
 	ctx := context.Background()
 
-	user, err := testRepo.GetByEmail(ctx, "test")
+	user, err := testRepo.GetByIdentifier(ctx, "")
 	if err != nil {
 		t.Fatal(err)
 	}
 	log.Println(user)
 }
 
-func TestGetByID(t *testing.T) {
-	ctx := context.Background()
+// func TestGetByID(t *testing.T) {
+// 	ctx := context.Background()
 
-	user, err := testRepo.GetByID(ctx, 1)
-	if err != nil {
-		t.Fatal(err)
-	}
-	log.Println(user)
-}
+// 	user, err := testRepo.GetByID(ctx, 1)
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
+// 	log.Println(user)
+// }
 
-func TestUserList(t *testing.T) {
-	ctx := context.Background()
+// func TestUserList(t *testing.T) {
+// 	ctx := context.Background()
 
-	users, err := testRepo.List(ctx, 10, 0)
-	if err != nil {
-		t.Fatal(err)
-	}
-	log.Printf("%+v\n", users)
-}
+// 	users, err := testRepo.List(ctx, 10, 0)
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
+// 	log.Printf("%+v\n", users)
+// }
