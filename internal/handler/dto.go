@@ -9,6 +9,11 @@ type RegisterReq struct {
 	Password string `json:"password"`
 }
 
+type LoginReq struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 // responses DTO
 type UserResp struct {
 	ID        int       `json:"id"`

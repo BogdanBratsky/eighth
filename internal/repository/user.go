@@ -30,17 +30,16 @@ func (r *UserPostgres) Create(ctx context.Context, user *model.User) error {
 	return nil
 }
 
-func (r *UserPostgres) GetByIdentifier(ctx context.Context, identifier string) (*model.User, error) {
+func (r *UserPostgres) GetByEmail(ctx context.Context, email string) (*model.User, error) {
 	query := `
 		SELECT id, login, email, password_hash, is_active, created_at, updated_at
 		FROM users
-		WHERE login = $1 OR email = $1
-		LIMIT 1;
+		WHERE email = $1;
 	`
 
 	user := &model.User{}
 
-	err := r.db.QueryRowContext(ctx, query, identifier).
+	err := r.db.QueryRowContext(ctx, query, email).
 		Scan(
 			&user.ID,
 			&user.Login,
@@ -56,6 +55,33 @@ func (r *UserPostgres) GetByIdentifier(ctx context.Context, identifier string) (
 		}
 		return nil, err
 	}
+	return user, nil
+}
 
+func (r *UserPostgres) GetByLogin(ctx context.Context, login string) (*model.User, error) {
+	query := `
+		SELECT id, login, email, password_hash, is_active, created_at, updated_at
+		FROM users
+		WHERE login = $1;
+	`
+
+	user := &model.User{}
+
+	err := r.db.QueryRowContext(ctx, query, login).
+		Scan(
+			&user.ID,
+			&user.Login,
+			&user.Email,
+			&user.PasswordHash,
+			&user.IsActive,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+		)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errors.New("user not found")
+		}
+		return nil, err
+	}
 	return user, nil
 }

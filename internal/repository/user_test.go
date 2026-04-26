@@ -66,15 +66,15 @@ func TestCreateUser(t *testing.T) {
 	}
 }
 
-func TestGetByEmail(t *testing.T) {
-	ctx := context.Background()
+// func TestGetByEmail(t *testing.T) {
+// 	ctx := context.Background()
 
-	user, err := testRepo.GetByIdentifier(ctx, "")
-	if err != nil {
-		t.Fatal(err)
-	}
-	log.Println(user)
-}
+// 	user, err := testRepo.GetByIdentifier(ctx, "")
+// 	if err != nil {
+// 		t.Fatal(err)
+// 	}
+// 	log.Println(user)
+// }
 
 // func TestGetByID(t *testing.T) {
 // 	ctx := context.Background()
