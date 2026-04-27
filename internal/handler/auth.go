@@ -24,18 +24,18 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	var input RegisterReq
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		log.Println(err)
+		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	err = h.service.Register(ctx, input.Login, input.Email, input.Password)
 	if err != nil {
-		log.Println(err)
+		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	log.Println("success")
-	success(w, http.StatusOK, nil)
+	respondSuccess(w, http.StatusOK, nil)
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -46,16 +46,16 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var input LoginReq
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		log.Println(err)
+		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	token, err := h.service.Login(ctx, input.Email, input.Password)
 	if err != nil {
-		log.Println(err)
+		respondError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
 	log.Println("success")
-	success(w, http.StatusOK, token)
+	respondSuccess(w, http.StatusOK, token)
 }
