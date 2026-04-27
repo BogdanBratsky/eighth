@@ -35,6 +35,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("success")
+	success(w, http.StatusOK, nil)
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -56,18 +57,5 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println("success")
-
-	resp := struct {
-		Status string `json:"status"`
-		Token  string `json:"token"`
-	}{
-		Status: "ok",
-		Token:  token,
-	}
-
-	err = json.NewEncoder(w).Encode(resp)
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	success(w, http.StatusOK, token)
 }
