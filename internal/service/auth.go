@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 
 	"github.com/BogdanBratsky/eigth/internal/model"
 	"github.com/BogdanBratsky/eigth/pkg/hasher"
@@ -20,13 +21,20 @@ type AuthService struct {
 	repo   AuthRepo
 	hasher *hasher.BcryptHasher
 	jwt    *token.JWTManager
+	logger *slog.Logger
 }
 
-func NewAuthService(r AuthRepo, h *hasher.BcryptHasher, j *token.JWTManager) *AuthService {
+func NewAuthService(
+	r AuthRepo,
+	h *hasher.BcryptHasher,
+	j *token.JWTManager,
+	l *slog.Logger,
+) *AuthService {
 	return &AuthService{
 		repo:   r,
 		hasher: h,
 		jwt:    j,
+		logger: l,
 	}
 }
 
