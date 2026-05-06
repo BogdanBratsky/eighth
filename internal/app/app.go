@@ -32,7 +32,7 @@ func NewServer(appCfg *config.AppConfig, db *sql.DB) (*http.Server, error) {
 	authService := service.NewAuthService(userRepo, hasher, jwt, logger)
 
 	// handler
-	authHandler := handler.NewAuthHandler(authService)
+	authHandler := handler.NewAuthHandler(authService, logger)
 
 	// router
 	mux := http.NewServeMux()
